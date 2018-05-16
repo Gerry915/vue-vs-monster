@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Vue js -->
+    <script src="./src/vue.js"></script>
+    <link rel="stylesheet" href="./src/app.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body>
+      <div class="container mt-5 pt-5" id="app">
+        <input type="text" v-on:input="changeTitle">
+          <p>{{ title }}</p>
+          <button type="button" class="btn btn-primary" v-on:click="showMyAlert()"> Click!</button>
+          <br>
+          <input class="m-5" type="text" v-on:keydown="eventResult = $event.target.value">
+          <p>{{ eventResult }}</p>
+
+
+          <h1>Two way binding</h1>
+          <input type="text" v-model="name">
+          <p>{{name}}</p>
+
+          <br>
+          <br>
+          <hr>
+
+          <p class="lead">Current value: {{ value }}</p>
+          <button type="button" class="btn btn-primary" @click="value += 5">Add 5</button>
+          <button type="button" class="btn btn-dark" @click="value += 1">Add 1</button>
+          <p>Result: {{ result }}</p>
+
+
+          <br>
+          <hr>
+
+          <div class="defaultDiv" @click="isAttached = !isAttached" :class="{changedDiv: isAttached}"></div>
+          <div class="defaultDiv red"></div>
+          <div class="defaultDiv changedDiv"></div>
+
+          <div id="testDiv" :style="myStyle"></div>
+
+          <input type="text" v-model="color">
+          <input type="text" v-model="width">
+
+
+          <br>
+          <br>
+          <hr>
+
+          <h1 id="practice" class="m-5" @mouseover="ChangeText = !ChangeText" :class="{changeTextStyle: ChangeText}">Welcome to our site!</h1>
+
+          <h1 v-if="show" class="showWithAn">Hello!</h1>
+          <h1 v-else class="hideWithAn">Hello!</h1>
+          <button class="btn btn-dark" @click="show = !show">Switch</button>
+          
+      </div>
+      
+
+
+
+      <!-- Vue Code -->
+      <script>
+        new Vue({
+          el: '#app',
+          data: {
+            show: true,
+            title: 'Hello Vue!',
+            eventResult: '1',
+            name: 'Gerry',
+            lastName: 'Gao',
+            value: 0,
+            isAttached: false,
+            color: 'black',
+            width: 200,
+            ChangeText: false,
+            size: 22
+          },
+          computed: {
+            result: function(){
+              return this.value >= 37 ? 'Good' : 'Not';
+            },
+            myStyle: function() {
+              return {
+                backgroundColor: this.color,
+                width: this.width + 'px',
+                height: this.width + 'px'
+              }
+            },
+            ChangeMyTitleStyle: function() {
+              return {
+                fontSize: this.size + 20
+              }
+            }
+          },
+          watch: {
+            ChangeMyTitleStyle: function() {
+              var vm = this
+              setTimeout(() => {
+                vm.size = 22
+              }, 1000);
+            },
+            result: function() {
+              var vm = this;
+              setTimeout(() => {
+                vm.value = 0;
+              }, 2000);
+            },
+            myStyle: function() {
+              var vm = this
+              setTimeout(() => {
+                vm.width = 200
+              }, 5000);
+            }
+          },
+          methods: {
+            changeTitle: function(event){
+              this.title = event.target.value;
+            },
+            showMyAlert: function(){
+              alert('Clicked!');
+            },
+            recordResult: function(event){
+              eventResult = event.target.value;
+              console.log(eventResult);
+            },
+            myTextStyle: function() {
+              return{
+                fontSize: this.size + 'px',
+                backgroundColor: 'red'
+              }
+            }
+          }
+        })
+      </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
