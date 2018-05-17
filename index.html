@@ -101,7 +101,7 @@
                     this.monsterHealth -= this.calculator(10)
                     this.playerHealth -= this.calculator(15)
                     this.canHeal = true
-                    this.hitHistory.push({
+                    this.hitHistory.unshift({
                         vOne: this.calculator(15),
                         vTwo: this.calculator(10)
                     })
