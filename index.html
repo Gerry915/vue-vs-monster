@@ -93,16 +93,17 @@
                 showBg: true
             },
             methods: {
+                calculator: function(damage) {
+                    return Math.floor((Math.random() * damage) + 1)
+                },
                 attack: function () {
-                    var hit = Math.floor((Math.random() * 20) + 1)
-                    this.showBg = true? hit >=5 : hit < 5
-                    var fightBack = Math.floor((Math.random() * 15) + 1)
-                    this.monsterHealth = this.monsterHealth - hit
-                    this.playerHealth = this.playerHealth - fightBack
+                    //this.showBg = true? hit >=5 : hit < 5
+                    this.monsterHealth -= this.calculator(10)
+                    this.playerHealth -= this.calculator(15)
                     this.canHeal = true
                     this.hitHistory.push({
-                        vOne: hit,
-                        vTwo: fightBack
+                        vOne: this.calculator(15),
+                        vTwo: this.calculator(10)
                     })
 
                     if (this.monsterHealth <= 0) {
