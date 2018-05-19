@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="./app.css">
-    <script src="/vue.js"></script>
+    <script defer src="/vue.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Exo+2" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
@@ -17,7 +17,7 @@
     href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
 </head>
 
-<body>
+<body id="main">
     <div id="app">
         <div class="title container text-center my-5">
             <h1 class="animated bounceInDown">Vue v.s. Monster</h1>
@@ -25,12 +25,13 @@
         <div id="characterDiv" class="container">
             <div class="row">
                 <div id="you" class="col-6">
-                    <figure class="characterAvatar bg-primary m-auto">
-                        <img class="characterImg" src="./src/img/if_Viking_2913107.svg" alt="you">
+                    <figure class="characterAvatar bg-warning m-auto">
+                        <img id="avatar" class="characterImg" src="./src/img/if_Viking_2913107.svg" alt="you">
                     </figure>
                     <!-- Player Health -->
                     <div class="progress mx-auto mt-3 w-50" style="height: 50px">
-                        <div class="bg-success characterHealth progress-bar" role="progressbar" :aria-valuenow="playerHealth" aria-valuemin="0" aria-valuemax="100">
+                        <div id="testbar" class="bg-success characterHealth progress-bar" role="progressbar" :aria-valuenow="playerHealth" aria-valuemin="0" aria-valuemax="100" :style="{width : playerHealth + '%'}"
+                        :class="{'bg-danger' : playerHealth <=20,'bg-warning' : playerHealth <=50}">
                             <span class="hit">{{ playerHealth }}</span>
                         </div>
                     </div>
@@ -38,12 +39,12 @@
 
                 <div id="monster" class="col-6">
                     <figure class="characterAvatar bg-danger m-auto">
-                        <img class="characterImg" src="./src/img/if_Medusa_2913102.svg" alt="monster">
+                        <img id="monsterAvatar" class="characterImg" src="./src/img/if_Medusa_2913102.svg" alt="monster">
                     </figure>
                     <!-- Monster Health -->
                     <div class="progress mx-auto mt-3 w-50" style="height: 50px">
-                        <div id="testbar" class="bg-animation bg-primary characterHealth progress-bar" role="progressbar" :aria-valuenow="monsterHealth" aria-valuemin="0"
-                            aria-valuemax="100" :class="{'bg-danger' : monsterHealth <=20,'bg-warning' : monsterHealth <=50}">
+                        <div id="testbar" class="bg-animation bg-success characterHealth progress-bar" role="progressbar" :aria-valuenow="monsterHealth" aria-valuemin="0"
+                            aria-valuemax="100" :class="{'bg-danger' : monsterHealth <=20,'bg-warning' : monsterHealth <=50}" :style="{width : monsterHealth + '%'}">
                             <span class="hit">{{ monsterHealth }}</span>
                         </div>
                     </div>
@@ -52,21 +53,21 @@
         </div>
 
         <div id="controlPanel" class="container my-5 text-center">
-            <button class="controlBtn btn-lg btn-danger mr-5" @click="attack()" :class="{animated: animation,bounce: animation}">Attack!</button>
-            <button class="controlBtn btn-lg btn-warning mr-5" @click="specialAttack()">Special Attack!</button>
-            <button class="controlBtn btn-lg btn-success mr-5" @click="heal()" :disabled="canHeal == 0" :class="{bgDark : canHeal}">Heal!</button>
+            <button class="controlBtn btn-lg btn-danger mr-5" @click="attack($event)">Attack!</button>
+            <button class="controlBtn btn-lg btn-warning mr-5" @click="specialAttack($event)">Special Attack!</button>
+            <button class="controlBtn btn-lg btn-success mr-5" @click="heal()" :disabled="canHeal == 0">Heal!<span>({{ healCount }})</span></button>
             <button class="controlBtn btn-lg btn-dark mr-5" @click="giveUp()">Run!</button>
         </div>
 
         <div id="listView" class="container list-group">
             <ul id="historyList" v-for="(hit,index) in hitHistory">
                 <template>
-                    <li class="list-group-item">
+                    <li class="list-group-item animated fadeInUp">
                         <template>  
                             <p>Player attacked! <span class="lead">{{ hit.vOne }}</span> damage</p>
                         </template>
                     </li>
-                    <li class="list-group-item bg-secondary">
+                    <li class="list-group-item bg-secondary animated fadeInUp">
                             <template>
                                 <p>Monster fight back! <span>{{ hit.vTwo }}</span> damage</p>
                             </template>
@@ -89,15 +90,25 @@
                 monsterHealth: 100,
                 canHeal: false,
                 hitHistory: [],
-                animation: true,
-                showBg: true
+                healCount: 3
             },
             methods: {
+                resetAnimation: function(event,className,elementId){
+                    event.preventDefault()
+                    console.log(className)
+                    console.log(elementId)
+                    var element = document.getElementById(elementId)
+                    element.classList.remove('animated',className)
+                    void element.offsetWidth
+                    element.classList.add('animated',className)
+                    console.log(element)
+                },
                 calculator: function(damage) {
                     return Math.floor((Math.random() * damage) + 1)
                 },
-                attack: function () {
-                    //this.showBg = true? hit >=5 : hit < 5
+                attack: function (event) {
+                    this.resetAnimation(event,'swing','avatar')
+                    this.resetAnimation(event,'wobble','monsterAvatar')
                     this.monsterHealth -= this.calculator(10)
                     this.playerHealth -= this.calculator(15)
                     this.canHeal = true
@@ -111,9 +122,12 @@
                         this.playerHealth = 100
                         this.monsterHealth = 100
                         this.hitHistory = []
+                        this.healCount = 3
                     }
                 },
-                specialAttack: function () {
+                specialAttack: function (event) {
+                    this.resetAnimation(event,'tada','avatar')
+                    this.resetAnimation(event,'wobble','monsterAvatar')
                     var hit = Math.floor((Math.random() * 50) + 1)
                     var fightBack = Math.floor((Math.random() * 25) + 1)
                     this.monsterHealth = this.monsterHealth - hit
@@ -123,15 +137,20 @@
                         alert('You Won!')
                         this.playerHealth = 100
                         this.monsterHealth = 100
+                        this.healCount = 3
                     }
                 },
                 heal: function () {
-                    if (this.playerHealth > 100) {
+                    
+                    if (this.playerHealth >= 100) {
                         alert('Max health!')
-                    } else {
+                    } else if (this.healCount <= 0) {
+                        this.canHeal = 1
+                    }else{
                         var add = Math.floor((Math.random() * 25) + 1)
                         var fightBack = Math.floor((Math.random() * 15) + 1)
                         this.playerHealth = this.playerHealth + add
+                        this.healCount--
                     }
 
                 },
@@ -140,6 +159,7 @@
                     this.playerHealth = 100
                     this.monsterHealth = 100
                     this.hitHistory = []
+                    this.healCount = 3
                 }
             }
         })
