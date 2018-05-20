@@ -60,7 +60,7 @@
         </div>
 
         <div id="listView" class="container list-group">
-            <ul id="historyList" v-for="(hit,index) in hitHistory">
+            <ul id="historyList" v-for="hit in hitHistory">
                 <template>
                     <li class="list-group-item animated fadeInUp">
                         <template>  
@@ -113,12 +113,14 @@
                 attack: function (event) {
                     this.resetAnimation(event,'swing','avatar')
                     this.resetAnimation(event,'wobble','monsterAvatar')
-                    this.monsterHealth -= this.calculator(10)
-                    this.playerHealth -= this.calculator(15)
+                    var playerDamage = this.calculator(10)
+                    var monsterDamage = this.calculator(15)
+                    this.monsterHealth -= playerDamage
+                    this.playerHealth -= monsterDamage
                     this.canHeal = true
                     this.hitHistory.unshift({
-                        vOne: this.calculator(15),
-                        vTwo: this.calculator(10)
+                        vOne: playerDamage,
+                        vTwo: monsterDamage
                     })
 
                     if (this.monsterHealth <= 0) {
