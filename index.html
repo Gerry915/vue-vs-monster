@@ -94,10 +94,14 @@
             },
             methods: {
                 resetAnimation: function(event,className,elementId){
-                    event.preventDefault()
-                    console.log(className)
-                    console.log(elementId)
+                    //event.preventDefault()
                     var element = document.getElementById(elementId)
+                    if(className == 'swing'){
+                        element.classList.remove('tada')
+                    }else {
+                        element.classList.remove('swing')
+                    }
+
                     element.classList.remove('animated',className)
                     void element.offsetWidth
                     element.classList.add('animated',className)
@@ -123,6 +127,12 @@
                         this.monsterHealth = 100
                         this.hitHistory = []
                         this.healCount = 3
+                    }else if(this.playerHealth <= 0){
+                        alert('You Die!')
+                        this.playerHealth = 100
+                        this.monsterHealth = 100
+                        this.hitHistory = []
+                        this.healCount = 3
                     }
                 },
                 specialAttack: function (event) {
@@ -135,6 +145,11 @@
                     this.canHeal = true
                     if(this.monsterHealth <= 0){
                         alert('You Won!')
+                        this.playerHealth = 100
+                        this.monsterHealth = 100
+                        this.healCount = 3
+                    }else if(this.playerHealth <= 0){
+                        alert('You Die!')
                         this.playerHealth = 100
                         this.monsterHealth = 100
                         this.healCount = 3
